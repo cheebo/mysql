@@ -36,6 +36,8 @@ var (
 	dials     map[string]DialFunc
 )
 
+var once sync.Once
+
 // RegisterDial registers a custom dial function. It can then be used by the
 // network address mynet(addr), where mynet is the registered new network.
 // addr is passed as a parameter to the dial function.
@@ -161,5 +163,7 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 }
 
 func init() {
-	sql.Register("mysql", &MySQLDriver{})
+	once.Do(func() {
+		sql.Register("mysql", &MySQLDriver{})
+	}
 }
